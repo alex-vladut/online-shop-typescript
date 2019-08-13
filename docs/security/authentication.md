@@ -16,8 +16,16 @@ There are a few things in that tutorial and their example project that I don't l
 
 Let's see in more detail what each of the points mean. I hope there is no need to explain why the first point is a really bad idea. Having keys or other kinds of secrets into your source code repository will expose you to a lot of troubles, in this case an attacker will be able to issue a valid JWT token on your behalf and basically impersonate any user from your system. You should treat the secrets very carefully by storing them in a secrets vault and injecting them into your application through environment variables at runtime. See XXX for more details.
 
-The problem with the second point is that, with the implementation they provide, if I forget to annotate an endpoint with `@UseGuards(AuthGuard())` or a similar decorator, this endpoint will be available to anyone without any authentication check. In my opinion this is a bad design if I have to rely on developers to always implement it properly. I make such mistakes all the time and I want my application to be secure by default instead of just opening an endpoint to the whole world by default.
-
+The problem with the second point is that, with the implementation they provide, if I forget to annotate an endpoint with `@UseGuards(AuthGuard())` or a similar decorator, this endpoint will be available to anyone without any authentication check. In my opinion this is a bad design if I have to rely on developers to always implement it properly. I make such mistakes all the time and I want my application to be secure by default instead of just opening an endpoint to the whole world by default. I want to make the decision of making an endpoint public a conscious one.
+There is a `defaultStrategy` you can set for Passport.js, but what that will do is instead of typing:
+```javascript
+@UseGuards(AuthGuard('jwt'))
+```
+you could type just:
+```javascript
+@UseGuards(AuthGuard())
+```
+if you have set `jwt` as your default authentication strategy. So we will have to implement the logic ourselves.
 
 TODO
 - add .env (configurations service) for environment variables
