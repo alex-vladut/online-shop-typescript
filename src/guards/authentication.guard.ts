@@ -2,6 +2,8 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { authenticate } from 'passport';
 
+import { RequestWithUser } from './request-with-user.interface';
+
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
@@ -26,9 +28,13 @@ export class AuthenticationGuard implements CanActivate {
   }
 }
 
-const getAuthenticatedUser = (strategy, request, response) =>
+const getAuthenticatedUser = (
+  strategy,
+  request,
+  response,
+): Promise<RequestWithUser> =>
   new Promise((resolve, reject) =>
     authenticate(strategy, {}, (err, user) =>
       err ? reject(err) : resolve(user),
-    )(request, response, err => (err ? reject(err) : resolve)),
+    )(request, response, (err) => (err ? reject(err) : resolve)),
   );

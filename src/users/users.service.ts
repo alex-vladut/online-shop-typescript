@@ -26,7 +26,7 @@ const users: User[] = [
 @Injectable()
 export class UsersService {
   async findOne(username: string): Promise<User | undefined> {
-    return users.find(user => user.username === username);
+    return users.find((user) => user.username === username);
   }
 
   async register(username: string, password: string): Promise<User> {
