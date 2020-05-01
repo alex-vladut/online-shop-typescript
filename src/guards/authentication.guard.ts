@@ -2,6 +2,8 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { authenticate } from 'passport';
 
+import { User } from '../users/model';
+
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
@@ -11,8 +13,11 @@ export class AuthenticationGuard implements CanActivate {
       context.switchToHttp().getRequest(),
       context.switchToHttp().getResponse(),
     ];
-    const strategy = this.getStrategy(context);
-    const user = await getAuthenticatedUser(strategy, request, response);
+    const user = await getAuthenticatedUser(
+      this.getStrategy(context),
+      request,
+      response,
+    );
     request.user = user;
     return true;
   }
@@ -26,9 +31,9 @@ export class AuthenticationGuard implements CanActivate {
   }
 }
 
-const getAuthenticatedUser = (strategy, request, response) =>
+const getAuthenticatedUser = (strategy, request, response): Promise<User> =>
   new Promise((resolve, reject) =>
     authenticate(strategy, {}, (err, user) =>
       err ? reject(err) : resolve(user),
-    )(request, response, err => (err ? reject(err) : resolve)),
+    )(request, response, (err) => (err ? reject(err) : resolve)),
   );
