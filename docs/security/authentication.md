@@ -13,7 +13,7 @@ There are a few things in that tutorial and their example project that I don't l
 
 1. don't hardcode keys or secrets into your code
 1. the API is open by default
-1. use asymmetrics (public and private) key for signing and verifying the JWT token
+1. use asymmetric (public and private) key for signing and verifying the JWT token
 
 Let's see in more detail what each of the points mean. I hope there is no need to explain why the first point is a really bad idea. Having keys or other kinds of secrets into your source code repository will expose you to a lot of troubles, in this case an attacker will be able to issue a valid JWT token on your behalf and basically impersonate any user from your system. You should treat the secrets very carefully by storing them in a secrets vault and injecting them into your application through environment variables at runtime. See XXX for more details.
 
@@ -39,5 +39,3 @@ https://github.com/nestjs/passport/issues/20
 
 TODO
 
-- add .env (configurations service) for environment variables
-- remove /auth/constants.ts
