@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
@@ -8,6 +9,7 @@ async function bootstrap() {
   app.use(helmet({ referrerPolicy: true }));
   app.enableCors();
 
-  await app.listen(3000);
+  const config = app.get(ConfigService);
+  await app.listen(config.get('port'));
 }
 bootstrap();
