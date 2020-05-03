@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
-import { Role } from '../auth/role';
 
 @Injectable()
 export class UsersService {
@@ -17,10 +16,7 @@ export class UsersService {
   }
 
   async register(username: string, password: string): Promise<User> {
-    const user = new User();
-    user.username = username;
-    user.password = password;
-    user.roles = [Role.Admin, Role.Developer];
+    const user = User.create(username, password);
     return this.usersRepository.save(user);
   }
 }
