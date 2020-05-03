@@ -1,41 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './model';
-import { Role } from '../auth/role';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-const users: User[] = [
-  {
-    userId: 1,
-    username: 'john',
-    password: 'changeme',
-    roles: [Role.Admin, Role.Developer],
-  },
-  {
-    userId: 2,
-    username: 'chris',
-    password: 'secret',
-    roles: [Role.Admin, Role.Developer],
-  },
-  {
-    userId: 3,
-    username: 'maria',
-    password: 'guess',
-    roles: [Role.Admin, Role.Developer],
-  },
-];
+import { User } from './user.entity';
+import { Role } from '../auth/role';
 
 @Injectable()
 export class UsersService {
-  async findOne(username: string): Promise<User | undefined> {
-    return users.find((user) => user.username === username);
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {}
+
+  async findOne(username: string): Promise<User> {
+    return this.usersRepository.findOne({ where: { username } });
   }
 
   async register(username: string, password: string): Promise<User> {
-    const maxUserId = users.reduce(
-      (max, user) => Math.max(max, user.userId),
-      0,
-    );
-    const userId = maxUserId + 1;
-    users.push({ userId, username, password, roles: [] });
-    return { userId, username, roles: [] };
+    const user = new User();
+    user.username = username;
+    user.password = password;
+    user.roles = [Role.Admin, Role.Developer];
+    return this.usersRepository.save(user);
   }
 }

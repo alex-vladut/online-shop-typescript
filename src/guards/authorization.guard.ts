@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { Role } from '../auth/role';
-import { RequestWithUser } from './request-with-user.interface';
+import { RequestWithUserInfo } from './request-with-user-info.interface';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
@@ -12,7 +12,7 @@ export class AuthorizationGuard implements CanActivate {
     if (this.isPublic(context)) {
       return true;
     }
-    const { user } = context.switchToHttp().getRequest<RequestWithUser>();
+    const { user } = context.switchToHttp().getRequest<RequestWithUserInfo>();
     const authorizedRoles = this.getAuthorizedRoles(context);
     return (
       authorizedRoles &&
